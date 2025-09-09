@@ -55,3 +55,47 @@ func TestConvertUserForDisplay_NilGender(t *testing.T) {
 		t.Errorf("Expected gender to remain nil, got %v", result.Gender)
 	}
 }
+
+func TestConvertUsersForDisplay_MixedGenders(t *testing.T) {
+	// Test with multiple users including nil genders
+	male := "male"
+	female := "female"
+	users := []*model.User{
+		{
+			ID:     "user1",
+			Name:   "User with nil gender",
+			Gender: nil,
+		},
+		{
+			ID:     "user2", 
+			Name:   "Male user",
+			Gender: &male,
+		},
+		{
+			ID:     "user3",
+			Name:   "Female user", 
+			Gender: &female,
+		},
+	}
+
+	result := convertUsersForDisplay(users)
+	
+	if len(result) != 3 {
+		t.Errorf("Expected 3 users, got %d", len(result))
+	}
+
+	// Check nil gender user
+	if result[0].Gender != nil {
+		t.Errorf("Expected first user gender to be nil, got %v", result[0].Gender)
+	}
+
+	// Check male user
+	if result[1].Gender == nil || *result[1].Gender != "男性" {
+		t.Errorf("Expected second user gender to be '男性', got %v", result[1].Gender)
+	}
+
+	// Check female user
+	if result[2].Gender == nil || *result[2].Gender != "女性" {
+		t.Errorf("Expected third user gender to be '女性', got %v", result[2].Gender)
+	}
+}
