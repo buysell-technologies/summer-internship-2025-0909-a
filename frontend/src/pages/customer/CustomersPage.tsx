@@ -32,9 +32,8 @@ const CustomersPage = () => {
 
   const [rowsPerPage, setRowsPerPage] = useState<number>(() => {
     const stored = localStorage.getItem(CUSTOMER_PAGE_SETTINGS_STORAGE_KEY);
-    console.log(stored)
     if (stored === null) {
-      return  DEFAULT_SETTINGS.rowsPerPage;
+      return DEFAULT_SETTINGS.rowsPerPage;
     }
     const parsed = JSON.parse(stored) as CustomerPageSettings;
     if (
