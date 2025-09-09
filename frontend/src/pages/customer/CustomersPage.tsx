@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react';
-import { useGetCustomers } from '../../api/generated/api';
-import CustomerTable from '../../features/customer/components/CustomerTable';
+import type { SelectChangeEvent } from '@mui/material';
 import {
   Alert,
   Box,
   Button,
   CircularProgress,
-  Typography,
-  Select,
-  MenuItem,
   FormControl,
+  MenuItem,
+  Select,
+  Typography,
 } from '@mui/material';
-import type { SelectChangeEvent } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useGetCustomers } from '../../api/generated/api';
+import CustomerTable from '../../features/customer/components/CustomerTable';
 
 type CustomerPageSettings = {
   rowsPerPage: number;
@@ -31,7 +31,10 @@ const CustomersPage = () => {
   const [page, setPage] = useState(0);
 
   const [rowsPerPage, setRowsPerPage] = useState<number>(() => {
-    const stored = localStorage.getItem(CUSTOMER_PAGE_SETTINGS_STORAGE_KEY)!;
+    const stored = localStorage.getItem(CUSTOMER_PAGE_SETTINGS_STORAGE_KEY);
+    if (stored === null) {
+      return DEFAULT_SETTINGS.rowsPerPage;
+    }
     const parsed = JSON.parse(stored) as CustomerPageSettings;
     if (
       typeof parsed.rowsPerPage === 'number' &&
@@ -46,7 +49,6 @@ const CustomersPage = () => {
     limit: rowsPerPage,
     offset: page * rowsPerPage,
   });
-
   useEffect(() => {
     const settings: CustomerPageSettings = {
       rowsPerPage,
