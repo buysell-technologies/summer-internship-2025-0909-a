@@ -2,9 +2,12 @@ package usecase
 
 import (
 	"context"
-
+	"errors" // errorsパッケージをインポート
+	"net/http" // net/httpパッケージをインポート
 	"github.com/buysell-technologies/summer-internship-2024-backend/api/domain/model"
 	"github.com/buysell-technologies/summer-internship-2024-backend/api/usecase/request"
+	"github.com/labstack/echo/v4" // echoをインポート
+	"gorm.io/gorm" // gormをインポート
 )
 
 func (u *usecase) GetStocks(ctx context.Context, input request.GetStocksRequest) ([]*model.Stock, error) {
@@ -32,6 +35,12 @@ func (u *usecase) GetStocks(ctx context.Context, input request.GetStocksRequest)
 func (u *usecase) GetStock(ctx context.Context, storeID, stockID string) (*model.Stock, error) {
 	stock, err := u.Repository.GetStock(ctx, storeID, stockID)
 	if err != nil {
+		// エラーハンドリングを追加
+		// 店舗ID,在庫IDが共に一致するレコードが見つからなかった場合のエラー
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, echo.NewHTTPError(http.statusNotFound, "stock not found")
+		}
+		// その他データベース周りのエラー
 		return nil, err
 	}
 
