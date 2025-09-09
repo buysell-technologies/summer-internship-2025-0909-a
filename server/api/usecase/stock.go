@@ -38,7 +38,7 @@ func (u *usecase) GetStock(ctx context.Context, storeID, stockID string) (*model
 		// エラーハンドリングを追加
 		// 店舗ID,在庫IDが共に一致するレコードが見つからなかった場合のエラー
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, echo.NewHTTPError(http.statusNotFound, "stock not found")
+			return nil, echo.NewHTTPError(http.StatusNotFound, "stock not found")
 		}
 		// その他データベース周りのエラー
 		return nil, err
