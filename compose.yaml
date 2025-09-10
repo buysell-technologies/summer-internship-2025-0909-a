@@ -40,7 +40,7 @@ services:
         source: go-modules-api
         target: /go/pkg/mod
     healthcheck:
-      test: 'curl -f localhost:1234/healthcheck || exit 1'
+      test: 'curl -f localhost:1234/v1/health || exit 1'
       interval: 5s
       timeout: 5s
       retries: 20

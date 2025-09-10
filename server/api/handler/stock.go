@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/buysell-technologies/summer-internship-2024-backend/api/handler/request"
-	usecaseRequest "github.com/buysell-technologies/summer-internship-2024-backend/api/usecase/request"
+	usecaseRequest "github.com/buysell-technologies/summer-internship-2024-backend/api/usecase/request" // ハンドラ側で使う
 	"github.com/labstack/echo/v4"
 )
 
@@ -184,19 +184,29 @@ func (h *Handler) CreateBulkStock(c echo.Context) error {
 func (h *Handler) UpdateStock(c echo.Context) error {
 	ctx := h.GetCtx(c)
 
+	stockId := c.Param("id")
+	if stockId == "" {
+		// IDが空の場合のエラーハンドリング
+		return echo.NewHTTPError(http.StatusBadRequest, "stock id is required")
+	}
+
 	var req request.UpdateStockRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err).
 			WithInternal(err)
 	}
 
+	// validator := validator.New()
+	// if err := validator.Struct(&req); err != nil {
+	// 	return echo.NewHTTPError(http.StatusBadRequest, err) //.WithInternal(err)
+	// }
+
 	if err := c.Validate(&req); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err).
-			WithInternal(err)
+		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
 	stock, err := h.Usecase.UpdateStock(ctx, usecaseRequest.UpdateStockRequest{
-		StockID:  req.StockID,
+		StockID:  stockId,
 		Name:     req.Name,
 		Quantity: req.Quantity,
 		Price:    req.Price,
