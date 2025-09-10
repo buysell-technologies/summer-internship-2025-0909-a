@@ -12,5 +12,8 @@ RUN apk add build-base tzdata && \
 # Go install Pack
 RUN go install github.com/cespare/reflex@latest
 RUN go install github.com/swaggo/swag/cmd/swag@v1.16.3
+RUN go install github.com/go-delve/delve/cmd/dlv@latest
 
 WORKDIR /go/src/server
+
+
