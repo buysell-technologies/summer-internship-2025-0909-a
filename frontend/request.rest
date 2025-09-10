@@ -1,0 +1,40 @@
+// File Variables
+
+// 基本
+@protocol = http
+@hostname = localhost
+@port = 1234
+@host = {{hostname}}:{{port}}
+@baseUrl = {{protocol}}://{{host}}
+@apiV = /v1
+@createdAt = {{$datetime iso8601}}
+@modifiedBy = {{$processEnv USERNAME}}
+@boundary = ----MyBoundary
+// ENVファイルからの読み込み
+@jwt = {{$dotenv VITE_API_AUTH_TOKEN}}
+// 変数
+@hoge_uuid = 1db31e56-5b62-4c98-b951-997e49b401e1
+
+// Requests
+
+// テスト
+GET http://localhost:1234/healthcheck HTTP/1.1
+
+###
+
+// 商品情報更新
+PUT {{baseUrl}}{{apiV}}/stocks/16 HTTP/1.1
+Authorization: Bearer {{jwt}}
+Origin: http://localhost:1234
+Content-Type: application/json
+
+{
+    "stock_id": 16,
+    "store_id": "4d6194fd-c3d2-4048-9c81-b503b640edb8",
+    "user_id": "a87a241d-1e90-4995-b79e-8a467cbb09b5",
+    "name": "Canon EOS R6",
+    "quantity": -111111,
+    "price": -5555555
+}
+
+###
